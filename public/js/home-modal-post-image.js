@@ -1,0 +1,75 @@
+$(document).ready(function(){
+    $('li img').on('click',function(){
+        var src = $(this).attr('src');
+        var img = '<img src="' + src + '" class="img-responsive"/>';
+
+        //Show
+        var index = $(this).parent('li').index();
+
+        var image = '';
+        image += img; 
+        image += '<div style="height:25px;clear:both;display:block;">';
+        image += '<a class="controls next" href="'+ (index+2) + '">next &raquo;</a>';
+        image += '<a class="controls previous" href="' + (index) + '">&laquo; prev</a>';
+        image += '</div>';
+
+        var komentar = '';
+        komentar += '<div class="media">';
+        komentar += '<div class="media-left">'
+        komentar += '<img src="img_avatar1.png" class="media-object" style="width:60px">'
+        komentar += '</div>'
+        komentar += '<div class="media-body">'
+        komentar += '<h4 class="media-heading">John Doe</h4>'
+        komentar += '<p>Lorem ipsum...</p>'
+        komentar += '</div>'
+        komentar += '</div>'
+    
+
+        $('#KutubaruModal').modal();
+        $('#KutubaruModal').on('shown.bs.modal', function(){
+            $('#KutubaruModal .modal-body .tampilkan-gambar').html(image);
+            $('#KutubaruModal .modal-body .menampilkan-komentar').html(komentar);
+
+            //new code
+            $('a.controls').trigger('click');
+        })
+        $('#KutubaruModal').on('hidden.bs.modal', function(){
+            $('#KutubaruModal .modal-body').html('');
+        }); 
+    });
+})
+
+//button controls
+$(document).on('click', 'a.controls', function(){
+    var index = $(this).attr('href');
+    var src = $('ul.row li:nth-child('+ index +') img').attr('src'); 
+    $('.modal-body img').attr('src', src);
+    var newPrevIndex = parseInt(index) - 1; 
+    var newNextIndex = parseInt(newPrevIndex) + 2; 
+    if($(this).hasClass('previous')){ 
+        $(this).attr('href', newPrevIndex); 
+        $('a.next').attr('href', newNextIndex);
+    }
+    else{
+        $(this).attr('href', newNextIndex); 
+        $('a.previous').attr('href', newPrevIndex);
+    }
+    var total = $('ul.row li').length + 1;
+
+    //hide next button
+    if(total === newNextIndex){
+        $('a.next').hide();
+    }
+    else{
+        $('a.next').show()
+    } 
+
+    //hide previous button
+    if(newPrevIndex === 0){
+        $('a.previous').hide();
+    }
+    else{
+        $('a.previous').show()
+    }
+    return false;
+});
